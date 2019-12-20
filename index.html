@@ -1,0 +1,84 @@
+<!doctype HTML>
+<html>
+
+<head>
+    <title>明けましておめでとうございます | WebVR x Hatsune Miku</title>
+    <meta content="AR.jsを用いて実物の年賀状上に映像を再生します（スマートフォンのみ）" name="description">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        AFRAME.registerComponent('vidhandler', {
+            init: function() {
+                var entity = document.querySelector('[sound]');
+                this.toggle = false;
+                this.vid = document.querySelector("#vid");
+                this.vid.pause();
+              	entity.components.sound.pauseSound();
+            },
+            tick: function() {
+            		var entity = document.querySelector('[sound]');
+                if (this.el.object3D.visible == true) {
+                    if (!this.toggle) {
+                        this.toggle = true;
+                        this.vid.play();
+                        entity.components.sound.playSound();
+                    }
+                } else {
+                    this.toggle = false;
+                    this.vid.pause();
+                    entity.components.sound.pauseSound();
+                }
+            }
+        });
+
+        function refrespage() {
+            location.reload();
+        }
+
+        function playvid() {
+            vid.play();
+        }
+    </script>
+</head>
+
+<body style="margin : 0px; overflow: hidden; visibility: hidden;" onLoad="document.body.style.visibility='visible'">
+
+    <a-scene embedded arjs="debugUIEnabled:false;trackingMethod:best;" vr-mode-ui="enabled: false" artoolkit='sourceType: webcam; detectionMode: mono; maxDetectionRate: 60; canvasWidth: 200; canvasHeight: 200'>
+        <a-assets>
+            <audio id="sound" src="assets/audio.wav" preload="auto"></audio>
+            <video autoplay muted="true" preload="auto" id="vid" poster="assets/pattern.png" width="786" height="1164" response-type="arraybuffer" loop="false" crossorigin webkit-playsinline playsinline controls>
+                <source  src="assets/video.mp4">
+                <img src="assets/pattern.png"> あなたのブラウザは非対応です。再読み込みで解決するかもしれません。
+            </video>
+        </a-assets>
+        <a-marker id="memarker" type="pattern" url="assets/pattern.patt" vidhandler>
+            <a-plane position='0 0.1 0.75' width="1.837"  height="2.715"  rotation="-90 0 0" material='transparent:true;src:#vid' controls></a-plane>
+        </a-marker>
+        <a-entity sound="src: #sound" autoplay="false"></a-entity>
+        <a-entity camera></a-entity>
+    </a-scene>
+    
+    <div class="footer">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pull-left">
+                <div class="onebleft">
+                    <button onclick="vid.playvid()" class="btn btnskips">Play</button>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pull-right">
+                <div class="onebright">
+                    <button onclick="refrespage()" class="btn btnskips">Refresh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
